@@ -10,10 +10,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func executeTemplate(w http.ResponseWriter, filePath string) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	tplPath := filepath.Join("templates", "home.gotmpl")
-	tpl, err := template.ParseFiles(tplPath)
+
+	tpl, err := template.ParseFiles(filePath)
 	if err != nil {
 		log.Printf("parsing template: %v", err)
 		http.Error(w, "There was an error parsing the template.", http.StatusInternalServerError)
@@ -27,20 +27,19 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	tplPath := filepath.Join("templates", "home.gotmpl")
+	executeTemplate(w, tplPath)
+}
+
 func contactHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "<h1>Contact me via this email...!</h1><br><a href=\"/\">Home</a>")
+	tplPath := filepath.Join("templates", "contact.gotmpl")
+	executeTemplate(w, tplPath)
 }
 
 func faqHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, `<h1>FAQ Page!</h1>
-
-	<ul>
-		<li>Is there a free version? Yes!</li>
-	</ul>
-
-	`)
+	tplPath := filepath.Join("templates", "faq.gotmpl")
+	executeTemplate(w, tplPath)
 }
 
 func myNameHandler(w http.ResponseWriter, r *http.Request) {
