@@ -11,20 +11,13 @@ import (
 )
 
 func executeTemplate(w http.ResponseWriter, filePath string) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-	tpl, err := template.ParseFiles(filePath)
+	t, err := template.ParseFiles(filePath)
 	if err != nil {
 		log.Printf("parsing template: %v", err)
 		http.Error(w, "There was an error parsing the template.", http.StatusInternalServerError)
 		return
 	}
-	err = tpl.Execute(w, nil)
-	if err != nil {
-		log.Printf("executing template: %v", err)
-		http.Error(w, "There was an error executing the template.", http.StatusInternalServerError)
-		return
-	}
+	t.Execute(w, nil)
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,9 +37,10 @@ func faqHandler(w http.ResponseWriter, r *http.Request) {
 
 func myNameHandler(w http.ResponseWriter, r *http.Request) {
 	n := chi.URLParam(r, "name")
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	s := fmt.Sprintf("<h1>Say ma name: Your name :%s", n)
-	fmt.Fprint(w, s)
+	data := make(map[string]string)
+	data["name"] = n
+	tplPath := filepath.Join("templates", "name.gohtml")
+	executeTemplate(w, tplPath)
 }
 
 func main() {
