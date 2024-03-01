@@ -1,27 +1,24 @@
 package main
 
 import (
-	"html/template"
-	"os"
+	"errors"
+	"fmt"
 )
 
-type User struct {
-	Name string
+func main() {
+	err := CreateUser()
+	fmt.Println(err)
 }
 
-func main() {
-	t, err := template.ParseFiles("hello.gotmpl")
+func Connect() error {
+	return errors.New("connection failed")
+}
+
+func CreateUser() error {
+	err := Connect()
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("create user: %w", err)
 	}
 
-	user := User{
-		Name: "John Smith",
-	}
-
-	err = t.Execute(os.Stdout, user)
-	if err != nil {
-		panic(err)
-	}
-
+	return nil
 }

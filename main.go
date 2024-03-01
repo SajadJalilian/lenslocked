@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/sajadjalilian/lenslocked/controllers"
+	"github.com/sajadjalilian/lenslocked/views"
 )
 
 func executeTemplate(w http.ResponseWriter, filePath string) {
@@ -20,36 +22,26 @@ func executeTemplate(w http.ResponseWriter, filePath string) {
 	t.Execute(w, nil)
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	tplPath := filepath.Join("templates", "home.gohtml")
-	executeTemplate(w, tplPath)
-}
-
-func contactHandler(w http.ResponseWriter, r *http.Request) {
-	tplPath := filepath.Join("templates", "contact.gohtml")
-	executeTemplate(w, tplPath)
-}
-
-func faqHandler(w http.ResponseWriter, r *http.Request) {
-	tplPath := filepath.Join("templates", "faq.gohtml")
-	executeTemplate(w, tplPath)
-}
-
-func myNameHandler(w http.ResponseWriter, r *http.Request) {
-	n := chi.URLParam(r, "name")
-	data := make(map[string]string)
-	data["name"] = n
-	tplPath := filepath.Join("templates", "name.gohtml")
-	executeTemplate(w, tplPath)
-}
-
 func main() {
 	r := chi.NewRouter()
 
-	r.Get("/", homeHandler)
-	r.Get("/contact", contactHandler)
-	r.Get("/faq", faqHandler)
-	r.Get("/name/{name}", myNameHandler)
+	tpl, err := views.Parse(filepath.Join("templates", "home.gohtml"))
+	if err != nil {
+		panic(err)
+	}
+	r.Get("/", controllers.StaticHandler(tpl))
+
+	tpl, err = views.Parse(filepath.Join("templates", "contact.gohtml"))
+	if err != nil {
+		panic(err)
+	}
+	r.Get("/contact", controllers.StaticHandler(tpl))
+
+	tpl, err = views.Parse(filepath.Join("templates", "faq.gohtml"))
+	if err != nil {
+		panic(err)
+	}
+	r.Get("/faq", controllers.StaticHandler(tpl))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
