@@ -12,7 +12,7 @@ type Session struct {
 	ID int
 	// Token is only set when creating a new session. When look un a session
 	// this will be left empty. as we only store the hash of a session token
-	// in our database and we cannot reverse it into a raw token
+	// in our database, and we cannot reverse it into a raw token
 	Token     string
 	UserId    int
 	TokenHash string
@@ -42,7 +42,14 @@ func (ss *SessionService) Create(userID int) (*Session, error) {
 		Token:     token,
 		TokenHash: ss.hash(token),
 	}
-	// TODO store the session in our DB
+	row := ss.DB.QueryRow(`
+	INSERT INTO sessions (user_id, token_hash)
+	VALUES ($1,$2)
+	RETURNING id;`, session.UserId, session.TokenHash)
+	err = row.Scan(&session.ID)
+	if err != nil {
+		return nil, fmt.Errorf("create: %w", err)
+	}
 	return &session, nil
 }
 
