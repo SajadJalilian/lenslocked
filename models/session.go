@@ -19,7 +19,7 @@ type Session struct {
 }
 
 const (
-	// The minimum number of bytes to be used for each session token.
+	// MinBytesPerToken The minimum number of bytes to be used for each session token.
 	MinBytesPerToken = 32
 )
 
@@ -80,6 +80,17 @@ func (ss *SessionService) User(token string) (*User, error) {
 		return nil, fmt.Errorf("user: %w", err)
 	}
 	return &user, nil
+}
+
+func (ss *SessionService) Delete(token string) error {
+	tokenHash := ss.hash(token)
+	_, err := ss.DB.Exec(`
+		DELETE FROM session
+		WHERE token_hash = $1;`, tokenHash)
+	if err != nil {
+		return fmt.Errorf("delete: %w", err)
+	}
+	return nil
 }
 
 func (ss *SessionService) hash(token string) string {
