@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+	"github.com/sajadjalilian/lenslocked/rand"
+)
 
 type Session struct {
 	ID int
@@ -12,14 +16,33 @@ type Session struct {
 	TokenHash string
 }
 
+const (
+	// The minimum number of bytes to be used for each session token.
+	MinBytesPerToken = 32
+)
+
 type SessionService struct {
-	DB *sql.DB
+	DB            *sql.DB
+	BytesPerToken int
 }
 
 func (ss *SessionService) Create(userID int) (*Session, error) {
-	// TODO: Create the session token
-	// TODO: Implement SessionService.Create
-	return nil, nil
+	bytesPerToken := ss.BytesPerToken
+	if bytesPerToken < MinBytesPerToken {
+		bytesPerToken = MinBytesPerToken
+	}
+	token, err := rand.String(bytesPerToken)
+	if err != nil {
+		return nil, fmt.Errorf("create: %w", err)
+	}
+	// TODO hash the session token
+	session := Session{
+		UserId: userID,
+		Token:  token,
+		// TODO: ser the token hash
+	}
+	// TODO store the session in our DB
+	return &session, nil
 }
 
 func (ss *SessionService) User(token string) (*User, error) {
