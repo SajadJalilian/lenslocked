@@ -27,6 +27,13 @@
           >
         </div>
         <div>
+          {{/* TODO Signout link */}}
+          <form action="/signout" method="post" class="inline pr-4">
+            <div class="hidden">
+              {{csrfField}}
+            </div>
+            <button type="submit">Sign out</button>
+          </form>
           <a class="pr-4" href="/signin">Sign in</a>
           <a
             class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded"
