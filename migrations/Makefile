@@ -1,4 +1,4 @@
-.PHOOY: goose-status goose-up goose-down
+.PHOOY: goose-status goose-up goose-down fix
 
 goose-status:
 	goose postgres "host=localhost port=5432 user=baloo password=junglebook dbname=lenslocked sslmode=disable" status
@@ -8,3 +8,6 @@ goose-up:
 
 goose-down:
 	goose postgres "host=localhost port=5432 user=baloo password=junglebook dbname=lenslocked sslmode=disable" down
+
+fix:
+	goose fix
