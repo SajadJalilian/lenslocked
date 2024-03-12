@@ -71,16 +71,20 @@ func main() {
 	r.Post("/users", usersC.Create)
 	r.Get("/signin", usersC.SignIn)
 	r.Post("/signin", usersC.ProcessSignIn)
-	r.Post("/signout", usersC.ProcessSignout)
+	r.Post("/signout", usersC.ProcessSignOut)
 	r.Get("/users/me", usersC.CurrentUser)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
 
+	umw := controllers.UserMiddleware{
+		SessionService: &sessionService,
+	}
+
 	csrfKey := "iyo7EQviU2kC*KXx8VpVjZgt9vnb9pxB"
 	csrfMw := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
 
 	fmt.Println("Starting the server on :3000...")
-	http.ListenAndServe(":3000", csrfMw(r))
+	http.ListenAndServe(":3000", csrfMw(umw.SetUser(r)))
 }
