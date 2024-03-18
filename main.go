@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/csrf"
+	"github.com/joho/godotenv"
 	"github.com/sajadjalilian/lenslocked/controllers"
 	"github.com/sajadjalilian/lenslocked/migrations"
 	"github.com/sajadjalilian/lenslocked/models"
@@ -14,6 +16,21 @@ import (
 )
 
 func main() {
+	// Load ENV
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	// host := os.Getenv("SMTP_HOST")
+	// portStr := os.Getenv("SMTP_PORT")
+	// port, err := strconv.Atoi(portStr)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// username := os.Getenv("SMTP_USERNAME")
+	// password := os.Getenv("SMTP_PASSWORD")
+
 	// Setup the database
 	cfg := models.DefaultPostgresConfig()
 	db, err := models.Open(cfg)
