@@ -27,19 +27,22 @@
           >
         </div>
         <div>
-          {{/* TODO Signout link */}}
+          {{if currentUser}}
           <form action="/signout" method="post" class="inline pr-4">
             <div class="hidden">
-              {{csrfField}}
+              {{ csrfField }}
             </div>
             <button type="submit">Sign out</button>
           </form>
+          {{ end }}
+          {{if not currentUser}}
           <a class="pr-4" href="/signin">Sign in</a>
           <a
             class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded"
             href="/signup"
             >Sign up</a
           >
+          {{ end }}
         </div>
       </nav>
     </header>
