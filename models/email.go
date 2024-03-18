@@ -37,7 +37,7 @@ type EmailService struct {
 	dialer        *mail.Dialer
 }
 
-func (es *EmailService) Sender(email Email) error {
+func (es *EmailService) Send(email Email) error {
 	msg := mail.NewMessage()
 	msg.SetHeader("To", email.To)
 	es.setFrom(msg, email)
@@ -57,6 +57,21 @@ func (es *EmailService) Sender(email Email) error {
 	err := es.dialer.DialAndSend(msg)
 	if err != nil {
 		return fmt.Errorf("send: %w", err)
+	}
+	return nil
+}
+
+func (es *EmailService) ForgotPassword(to, restURL string) error {
+	email := Email{
+		Subject:   "Reset your password",
+		To:        to,
+		Plaintext: "To reset your password, please visit the following link: ",
+		HTML: `<p>To reset your password, please visit the following link: <a
+		href="` + restURL + `">` + `</a></p>`,
+	}
+	err := es.Send(email)
+	if err != nil {
+		return fmt.Errorf("forget password email: %w", err)
 	}
 	return nil
 }
