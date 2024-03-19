@@ -64,6 +64,7 @@ func (es *EmailService) Send(email Email) error {
 func (es *EmailService) ForgotPassword(to, restURL string) error {
 	email := Email{
 		Subject:   "Reset your password",
+		From:      "sajad@gopherjobs.ir",
 		To:        to,
 		Plaintext: "To reset your password, please visit the following link: ",
 		HTML: `<p>To reset your password, please visit the following link: <a

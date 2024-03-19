@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"fmt"
+
 	"github.com/sajadjalilian/lenslocked/rand"
 )
 
@@ -82,6 +83,6 @@ func (ss *SessionService) Delete(token string) error {
 }
 
 func (ss *SessionService) hash(token string) string {
-	tokenHask := sha256.Sum256([]byte(token))
-	return base64.URLEncoding.EncodeToString(tokenHask[:])
+	tokenHash := sha256.Sum256([]byte(token))
+	return base64.URLEncoding.EncodeToString(tokenHash[:])
 }

@@ -122,7 +122,8 @@ func (u Users) ProcessForgotPassword(w http.ResponseWriter, r *http.Request) {
 	pwReset, err := u.PasswordResetService.Create(data.Email)
 	if err != nil {
 		// TODO: Handle other cases in the future.
-		fmt.Println(w, "Something went wrong.", http.StatusInternalServerError)
+		fmt.Println(err)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 		return
 	}
 	vals := url.Values{
@@ -131,7 +132,8 @@ func (u Users) ProcessForgotPassword(w http.ResponseWriter, r *http.Request) {
 	resetURL := "https://www.lenslocked.com/reset-pw?" + vals.Encode()
 	err = u.EmailService.ForgotPassword(data.Email, resetURL)
 	if err != nil {
-		fmt.Println(w, "Something went wrong.", http.StatusInternalServerError)
+		fmt.Println(err)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 		return
 	}
 	// Don't render the reset token here! we need to user to confirm they have
