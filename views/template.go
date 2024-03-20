@@ -31,6 +31,13 @@ func ParseFS(fs fs.FS, patterns ...string) (Template, error) {
 			"currentUser": func() (template.HTML, error) {
 				return "", fmt.Errorf("currentUser not implemented")
 			},
+			"errors": func() []string {
+				return []string{
+					"Don't fo that!",
+					"The email address provided is already exist.",
+					"Something went wrong",
+				}
+			},
 		},
 	)
 
