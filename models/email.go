@@ -46,12 +46,12 @@ func (es *EmailService) Send(email Email) error {
 
 	switch {
 	case email.Plaintext != "" && email.HTML != "":
-		msg.SetHeader("text/plain", email.Plaintext)
-		msg.SetHeader("text/html", email.HTML)
+		msg.SetBody("text/plain", email.Plaintext)
+		msg.SetBody("text/html", email.HTML)
 	case email.Plaintext != "":
-		msg.SetHeader("text/plain", email.Plaintext)
+		msg.SetBody("text/plain", email.Plaintext)
 	case email.HTML != "":
-		msg.SetHeader("text/html", email.HTML)
+		msg.SetBody("text/html", email.HTML)
 	}
 
 	err := es.dialer.DialAndSend(msg)
@@ -61,14 +61,13 @@ func (es *EmailService) Send(email Email) error {
 	return nil
 }
 
-func (es *EmailService) ForgotPassword(to, restURL string) error {
+func (es *EmailService) ForgotPassword(to, resetURL string) error {
 	email := Email{
 		Subject:   "Reset your password",
 		From:      "sajad@gopherjobs.ir",
 		To:        to,
 		Plaintext: "To reset your password, please visit the following link: ",
-		HTML: `<p>To reset your password, please visit the following link: <a
-		href="` + restURL + `">` + `</a></p>`,
+		HTML:      `<p>To reset your password, please visit the following link: <a href="` + resetURL + `">` + resetURL + `</a></p>`,
 	}
 	err := es.Send(email)
 	if err != nil {
